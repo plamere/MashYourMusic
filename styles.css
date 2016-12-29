@@ -1,0 +1,187 @@
+/* Sticky footer styles */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 28px;
+  padding-top: 0;
+  overflow-x: hidden;
+
+  /*background:rgb(129,175,177) !important;*/
+}
+
+#ttitle {
+    color:white;
+}
+
+#results {
+    margin-left:30px;
+    margin-right:30px;
+    display:none;
+}
+
+.ttext {
+    color:white;
+    font-size:24px;
+}
+
+.tttext {
+    margin-top:20px;
+    color:white;
+    font-size:20px;
+    /*background: rgba(50,50,50, 0.3);*/
+}
+
+#navbar {
+    height:70px !important;
+    min-height:70px !important;
+}
+
+#main-area {
+  position:absolute;
+  top: 75px;
+  left:250px;
+  bottom: 5px;
+  right:15px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#footer {
+  margin-top:10px;
+  width: 100%;
+  height: 18px;
+}
+
+#footer p {
+    font-size:12px;
+}
+
+#work {
+    margin-left:20px;
+    margin-right:20px;
+    display:None;
+    background: rgba(50,50,50, 0.3);
+}
+
+#main {
+    background-image: url(images/cover.jpg);
+}   
+
+
+
+@media screen and (min-width: 768px) {
+  .sp-jumbotron-custom {
+  }
+}
+
+
+.h1 {
+  margin-bottom: 42px; /* (@padding-base-vertical * 7) */
+}
+
+.top {
+    margin-top:66px;
+    position:relative;
+}
+
+img {
+  margin: 0 auto;
+}
+
+h3 {
+  font-weight: 600; /* @font-weight-semibold */
+  margin-top: 12px;
+}
+
+
+p {
+  margin-bottom: 18px; /* a little more breathing room between feature tiles in mobile
+view) */
+}
+
+@media screen and (min-width: 992px) {
+  p {
+    margin-bottom: 12px; /* reset to default */
+  }
+}
+
+#info {
+    color:white;
+    margin-top:20px;
+    font-size:24px;
+}
+
+.nav-bar {
+    height:72px !important;
+    min-height:72px !important;
+}
+
+.fine-print {
+  margin-bottom: 30px; /* (@padding-base-vertical * 5) */
+}
+
+.go {
+    margin-bottom:20px;
+}
+
+
+#jumbo-dialog {
+    color:white;
+    background: rgba(50,50,50, 0.3);
+    border-radius:15px;
+}
+
+
+.hoverable {
+    cursor: pointer;
+}
+
+/* Loading spinner based on following stackoverflow answer:
+    http://stackoverflow.com/questions/15982233/spinner-for-twitter-bootstrap-btn 
+    http://jsfiddle.net/oshybystyi/v04ag5ch/4/ */
+
+.has-spinner .fa-spinner {
+  opacity: 0;
+  max-width: 0;
+
+  -webkit-transition: opacity 0.25s, max-width 0.45s; 
+  -moz-transition: opacity 0.25s, max-width 0.45s;
+  -o-transition: opacity 0.25s, max-width 0.45s;
+  transition: opacity 0.25s, max-width 0.45s; /* Duration fixed since we animate additional hidden width */
+}
+
+.has-spinner.active {
+  cursor:progress;
+}
+
+.has-spinner.active .fa-spinner {
+  opacity: 1;
+  max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
+}
+
+
+#name  {
+    width:150px !important;
+}
+
+#uri-input  {
+    width:500px !important;
+}
+
+.more-info {
+    font-size:28px;
+}
+
+.award { 
+    font-size:16px;
+    line-height: 34px;
+    margin-right:8px ;
+}
+
+.icon {
+    padding-left:6px;
+}

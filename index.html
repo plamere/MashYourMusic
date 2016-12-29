@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://sp-bootstrap.global.ssl.fastly.net/7.4.1/sp-bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css?v2" rel="stylesheet" />
+
+    <link rel="shortcut icon" href="images/favicon.png">
+    <title> Mash Your Music</title>
+    <!-- Custom styles for this template -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+  <body >
+    <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="index.html">
+            <span class="navbar-logo">Spotify</span>
+            <span class="navbar-title">Mash Your Music</span>
+          </a>
+        </div>
+       <div class="nav  navbar-nav navbar-right">
+           <span id="info" class="navbar-info navbar-right"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div id='main' class="top jumbotron jumbotron-hero container-fluid">
+          <div class='intro'> 
+              <div  class="container" id="jumbo-dialog">
+                <h1 id='ttitle' >Mash Your Music</h1>
+                <p class='ttext'>
+                    Getting together with your friends this holiday season? Use Mash Your Music
+                    to combine all of <b>Your Top Songs 2016</b> playlists together into a
+                    single bangin' playlist.
+                    <br>
+                </p>
+                <br>
+                <a class="btn btn-primary btn-lg go" id='go' role="button">Login with Spotify to get started</a>
+                <p> </p>
+                <div class='err-txt'> </div>
+              </div>
+          </div>
+          <div id="work" class="work"> 
+            <div class='ttext'>
+                Enter the names and URIs of the <b>Your Top Songs 2016</b> playlists of your friends. 
+            </div>
+            <form class="form-inline">
+              <div><br> </div>
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="text" class="form-control" id="name" placeholder="playlist owner">
+                  <input type="text" class="form-control" id="uri-input" placeholder="playlist uri">
+                  <span class="input-group-btn">
+                    <button id='add' class="btn btn-primary" type="button">Add</button>
+                  </span>
+                </div>
+              </div>
+            </form>
+            <div class='ttext'>
+                The more you add, the better.
+            </div>
+            <div class='tttext'>
+                Here's a <a class="hoverable" id='samples'> sample</a> of what the output looks like.
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="intro row"> 
+        <div class="more-info col-sm-offset-3 col-sm-6">
+            <img src="images/yts.jpg">
+            <div><br></div>
+            Mash Your Music will help you create a great playlist by combining the best music from
+            everyone's Top Songs 2016 playlist. The generated playlist will contain a little bit of everyone's
+            favorites with an emphasis on music that is shared by the most people.
+            <div><br></div>
+            Mash Your Music will also show you some fun attributes about your group such as who has 
+            the most compatible music taste, and who is the most hipster.
+        </div>
+    </div>
+    <div class="row" id="results">
+        <h3> Badges </h3>
+        <div id="badges"> 
+        </div>
+        <h3> Taste Compatibility</h3>
+        <p> This table shows the number of shared tracks/artists between different pairs of people.  </p>
+
+        <table id="shared" class="table table-condensed">
+            <thead> </thead>
+            <tbody> </tbody>
+        </table>
+
+        <h3> The playlist </h3>
+        <p> The playlist is a combination of music from everyone's playlists. It favors
+            music that appears in multiple playlists, popular music along with everyone's top favs.
+        </p>
+
+        <button id='save-button' title="Save this playlist to Spotify" class="btn btn-primary" type="button">save</button>
+        <table class="table">
+            <col width="5%"> 
+            <col width="5%">
+            <col width="25%">
+            <col width="20%">
+            <col width="15%">
+            <col width="15%">
+            <col width="15%">
+            <thead>
+                <tr> 
+                    <th> # </th>
+                    <th> Pop </th>
+                    <th> title </th>
+                    <th> artist </th>
+                    <th> track liked by </th>
+                    <th> artist liked by </th>
+                    <th> reason </th>
+                </tr>
+            </thead>
+            <tbody id="simple-tracks"> </tbody>
+        </table>
+    </div>
+
+  <div class="row">
+    <div style="clear:both"> </div>
+    <div id="footer">
+      <div class="container text-center">
+            <p class="text-muted">
+                Powered by <a href="http://spotify.com">Spotify</a>.
+                Created by <a href="http://twitter.com/plamere">@plamere</a>
+                Get the <a
+                href="https://github.com/plamere/MashYourMusic">source</a>.
+            </p>
+      </div>
+    </div>
+ 
+    <script src="lib/jquery-1.11.1.min.js"></script>
+    <script src="lib/moment.min.js"></script>
+    <script src="https://sp-bootstrap.global.ssl.fastly.net/7.4.1/sp-bootstrap.min.js"></script>
+    <script src="lib/underscore-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" charset="utf-8" src="lib/rsvp-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="config.js?v1"></script>
+
+<script>
+"use strict";
+var accessToken = null;
+var curUserID = 'plamere';
+
+var progressBar = $("#progress-bar");
+var allPlaylists = {};
+var curUris = [];
+
+var artistInfo = {};
+
+
+RSVP.on('error', function(reason) {
+  console.assert(false, reason);
+});
+
+
+function now() {
+    return new Date().getTime();
+}
+
+function error(msg) {
+    info(msg);
+}
+
+function info(msg) {
+    $("#info").text(msg);
+}
+
+
+function authorizeUser() {
+    var scopes = 'playlist-modify-public';
+    var url = 'https://accounts.spotify.com/authorize?client_id=' + SPOTIFY_CLIENT_ID +
+        '&response_type=token' +
+        '&show_dialog=false' +
+        '&scope=' + encodeURIComponent(scopes) +
+        '&redirect_uri=' + encodeURIComponent(SPOTIFY_REDIRECT_URI);
+    document.location = url;
+}
+
+function parseArgs() {
+    var hash = location.hash.replace(/#/g, '');
+    var all = hash.split('&');
+    var args = {};
+    _.each(all, function(keyvalue) {
+        var kv = keyvalue.split('=');
+        var key = kv[0];
+        var val = kv[1];
+        args[key] = val;
+    });
+    return args;
+}
+
+function callSpotify(type, url, json, callback) {
+    $.ajax(url, {
+        type: type,
+        data: JSON.stringify(json),
+        dataType: 'json',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        },
+        success: function(r) {
+            callback(true, r);
+        },
+        error: function(r) {
+            // 2XX status codes are good, but some have no
+            // response data which triggers the error handler
+            // convert it to goodness.
+            if (r.status >= 200 && r.status < 300) {
+                callback(true, r);
+            } else {
+                callback(false, r);
+            }
+        }
+    });
+}
+
+
+function getSpotifyP(url, data) {
+    return new RSVP.Promise(function(resolve, reject) {
+        var curRetry = 0;
+        var maxRetries = 10;
+        function go() {
+          $.ajax(url, {
+              dataType: 'json',
+              data: data,
+              headers: {
+                  'Authorization': 'Bearer ' + accessToken
+              },
+              beforeSend : function () {
+                  // console.log("GET: " + this.url);
+              },
+              success: function(data) {
+                  resolve(data);
+              },
+              error: function(jqXHR, textStatus) {
+                  if (jqXHR.status >= 200 && jqXHR.status < 300) {
+                      resolve(jqXHR);
+                  } else if (jqXHR.status == 401) {
+                      window.location = 'index.html';
+                  } else if (jqXHR.status >= 500 && jqXHR.status < 600) {
+                    if (curRetry++ < maxRetries) {
+                        console.log('500 retry', curRetry, jqXHR.status);
+                        setTimeout(go, 500);
+                    } else {
+                        console.log('500 error', jqXHR);
+                        reject(textStatus + " after " + maxRetries + " retries");
+                    }
+                  } else if (jqXHR.status == 429) {
+                      console.log("429 status", jqXHR);
+                      var retry = 2000;
+                      var retryAfter = jqXHR.getResponseHeader("Retry-After");
+                      console.log("retryAfter is", retryAfter);
+
+                      if (retryAfter) {
+                          retry = parseInt(retryAfter, 10) * 1000;
+                      }
+                      if (retry < 1000) {
+                          retry = 1000;
+                      }
+                      console.log("retry", retry);
+                      if (curRetry++ < maxRetries) {
+                          console.log('429 retry', curRetry);
+                          setTimeout(go, retry + curRetry * retry);
+                      } else {
+                          console.log('429 error', jqXHR);
+                          reject(textStatus + " after " + maxRetries + " retries");
+                      }
+                    } else {
+                      reject(textStatus);
+                  }
+              }
+          });
+      }
+      go();
+    });
+}
+
+
+function isLocalHost() {
+    return window.location.host.indexOf('localhost') >= 0;
+}
+
+function isValidPlaylistUri(uri) {
+    var fields = uri.split(':');
+    if (fields.length != 5) {
+        return false;
+    }
+    if (fields[0] != 'spotify' || fields[3] != 'playlist') {
+        return false;
+    }
+    return true;
+}
+
+function saveInfo(params) {
+    localStorage.setItem("info", JSON.stringify(params));
+}
+
+function getInfo(params) {
+    var item = localStorage.getItem("info");
+    return JSON.parse(item);
+}
+
+function go() {
+    $('.err-txt').text("");
+    authorizeUser();
+}
+
+function normalizeUri(uri) {
+    uri = uri.replace("https://open.spotify.com", 'spotify');
+    uri = uri.replace("https://play.spotify.com", 'spotify');
+    uri = uri.replace(/\//g, ':');
+    return uri;
+}
+
+function stopLoading() {
+    console.log('stop loading');
+    abortLoading = true;
+    linfo("Stopping ... hang on ...");
+}
+
+function setProgress(percent) {
+  progressBar.css('width', percent+'%').attr('aria-valuenow', percent);
+}
+
+
+
+function loadPlaylist(owner, uri) {
+    uri = normalizeUri(uri);
+
+    var fields = uri.split(':');
+    var userID = fields[2];
+    var playlistID = fields[4];
+
+    var url = "https://api.spotify.com/v1/users/" + userID + "/playlists/" + playlistID;
+
+    function fetchNext(url) {
+        console.log("fetch next", url);
+        callSpotify("GET", url, null, function(ok, data) {
+            console.log("fetch next", ok, data);
+            allPlaylists[uri].tracks.push.apply(allPlaylists[uri].tracks, data.items);
+            console.log("len", allPlaylists[uri].tracks.length);
+            loadTrackArtists(data.items, function() {
+                if (data.next) {
+                    fetchNext(data.next);
+                } else {
+                    updateResults();
+                }
+            });
+        });
+    }
+
+    callSpotify("GET", url, null, function(ok, data) {
+        if (ok) {
+            allPlaylists[uri] = {
+                name:data.name,
+                description:data.description,
+                images:data.images,
+                tracks:data.tracks.items,
+                //which: _.keys(allPlaylists).length
+                which: owner
+            }
+            loadTrackArtists(data.tracks.items, function() {
+                if (data.tracks.next) {
+                    fetchNext(data.tracks.next);
+                } else {
+                    updateResults();
+                }
+            });
+        } else {
+            error("trouble loading that playlist");
+            console.log("error", data);
+        }
+    });
+}
+
+
+function fetchArtists(artistIDs, callback) {
+    var maxArtistsPerCall = 20;
+
+    console.log("fetchArtists", artistIDs);
+
+    function getNextIDs() {
+        var artists = [];
+        while (artistIDs.length > 0 && artists.length < maxArtistsPerCall) {
+            var aid = artistIDs.shift();
+            if (! (aid in artistInfo)) {
+                artists.push(aid);
+            }
+        }
+        return artists.join(',')
+    }
+
+    function nextArtists() {
+        var nextIDs = getNextIDs();
+        console.log("nextArtists IDS", nextIDs);
+        if (nextIDs.length > 0) {
+            callSpotify("GET", "https://api.spotify.com/v1/artists?ids=" + nextIDs, null, function(ok, data) {
+                console.log("nextArtists", ok, data);
+                _.each(data.artists, function(artist) {
+                    artistInfo[artist.id] = artist;
+                });
+                if (nextIDs.length > 0) {
+                    console.log('next');
+                    nextArtists();
+                } else {
+                    console.log('callback');
+                    callback(artistInfo);
+                }
+            });
+        } else {
+            callback(artistInfo);
+        }
+    }
+    nextArtists();
+}
+
+function loadTrackArtists(trackItems, callback) {
+    var artistIDs = [];
+    console.log("loadTrackArtists");
+    _.each(trackItems, function(item) {
+        var track = item.track;
+        _.each(track.artists, function(artist) {
+            artistIDs.push(artist.id);
+        });
+    });
+    fetchArtists(artistIDs, callback);
+}
+
+
+function makeCompatibilityTable() {
+    var commonArtists = {};
+    var commonTracks = {};
+    var user = {};
+    var names = getNames();
+
+    _.each(names, function(name) {
+        commonArtists[name] = {};
+        commonTracks[name] = {};
+        user[name] = 0;
+        _.each(names, function(nname) {
+            commonTracks[name][nname] = 0;
+            commonArtists[name][nname] = 0;
+        });
+    });
+
+    _.each(allPlaylists, function(playlist) {
+        var name = playlist.which;
+        _.each(playlist.tracks, function(item) {
+            var track = item.track;
+            _.each(allPlaylists, function(nplaylist) {
+                var nname = nplaylist.which;
+                if (nplaylist.trackSet.has(track.id)) {
+                    commonTracks[name][nname] += 1;
+                    user[name] += 10;
+                }
+            });
+        });
+        _.each(allPlaylists, function(nplaylist) {
+            var nname = nplaylist.which;
+            _.each(Array.from(playlist.artistSet), function(aid) {
+                if (nplaylist.artistSet.has(aid)) {
+                    commonArtists[name][nname] += 1;
+                    user[name] += 1;
+                }
+            });
+        });
+    });
+    console.log('commonArtists', commonArtists);
+    console.log('commonTracks', commonTracks);
+
+    showCommonTable(commonTracks, commonArtists, $("#shared"));
+
+    var maxUser = null;
+    var minUser = null;
+    _.each(user, function(val, name) {
+        if (maxUser == null || val > user[maxUser]) {
+            maxUser = name;
+        }
+        if (minUser == null || val < user[minUser]) {
+            minUser = name;
+        }
+    });
+
+    if (user[maxUser] > 2) {
+        addBadge("Most compatible taste", maxUser, 'glyphicon-user', 'label-success');
+    }
+
+    if (user[maxUser] > 2) {
+        addBadge("Least compatible taste", minUser, 'glyphicon-user', 'label-danger');
+    }
+}
+
+function addBadge(name, person, icon, style) {
+    // style
+    // Default Primary Success Info Warning Danger
+    var badge = $("<span>")
+        .addClass("award")
+        .addClass("label")
+        .addClass(style)
+        .text(name + ":" + person);
+    badge.append( $("<span>").addClass('icon').addClass("glyphicon").addClass(icon));
+    $("#badges").append(badge);
+    $("#badges").append(" ");
+}
+
+
+
+function showCommonTable(commonTracks, commonArtists, table) {
+    var thead = table.find("thead");
+    var tbody = table.find("tbody");
+    var names = getNames();
+
+    thead.empty();
+    tbody.empty();
+
+    var tr = $("<tr>");
+    tr.append($("<th>").text("who"));
+    _.each(names, function(name) {
+        tr.append($("<th>").text(name));
+    });
+    thead.append(tr);
+
+    _.each(names, function(name) {
+        var tr = $("<tr>");
+        tr.append( $("<th>").text(name));
+        _.each(names, function(nname) {
+            var tracks = commonTracks[name][nname];
+            var artists = commonArtists[name][nname];
+            tr.append( $("<td>").text( tracks + "/" + artists));
+        });
+        tbody.append(tr);
+    });
+}
+
+function getNames() {
+    var names = [];
+    _.each(allPlaylists, function(playlist) {
+        names.push(playlist.which);
+    });
+    names.sort();
+    return names;
+}
+
+function postProcessPlaylist(playlist) {
+    playlist.trackSet = new Set();
+    playlist.artistSet = new Set();
+    playlist.workingTracks = [];
+    playlist.avgPop = 0;
+    playlist.maxPop = 0;
+    playlist.minPop = 100;
+    _.each(playlist.tracks, function(item, i) {
+        var track = item.track;
+        track.which = i;
+        track.label = playlist.which + "-" + (i + 1);
+        track.owner = new Set();
+        track.aowner = new Set();
+        playlist.trackSet.add(track.id);
+        track.owner.add(playlist.which);
+        track.aowner.add(playlist.which);
+        playlist.avgPop += track.popularity;
+        if (track.popularity > playlist.maxPop) {
+            playlist.maxPop = track.popularity;
+        }
+        if (track.popularity < playlist.minPop) {
+            playlist.minPop = track.popularity;
+        }
+        _.each(track.artists, function(artist, i) {
+            playlist.artistSet.add(artist.id);
+        });
+    });
+    if (playlist.tracks.length > 0) {
+        playlist.avgPop /= playlist.tracks.length;
+        playlist.artistDiversity = Array.from(playlist.artistSet).length / playlist.tracks.length;
+    } else {
+        playlist.avgPop = 0;
+        playlist.artistDiversity = 0;
+    }
+}
+
+
+function addBadges() {
+    var playlist = findMax('avgPop')
+    addBadge("Most mainstream", playlist.which, 'glyphicon-arrow-up', 'label-info');
+
+    var playlist = findMin('avgPop')
+    addBadge("Most hipster", playlist.which, 'glyphicon-sunglasses', 'label-warning');
+
+    var playlist = findMin('minPop')
+    addBadge("Deepest cut", playlist.which, 'glyphicon-chevron-down', 'label-default');
+
+    var playlist = findMax('maxPop')
+    addBadge("Most popular track", playlist.which, 'glyphicon-chevron-up', 'label-info');
+
+    var playlist = findMax('artistDiversity')
+    addBadge("Most diverse artists", playlist.which, 'glyphicon-hand-up', 'label-info');
+
+    var playlist = findMin('artistDiversity')
+    addBadge("Least diverse artists", playlist.which, 'glyphicon-hand-down', 'label-danger');
+}
+
+
+function findMax(field) {
+    var curMax = null;
+    _.each(allPlaylists, function(playlist) {
+        if (curMax == null || playlist[field] > curMax[field]) {
+            curMax = playlist;
+        }
+    });
+    return curMax;
+}
+
+function findMin(field) {
+    var cur = null;
+    _.each(allPlaylists, function(playlist) {
+        if (cur == null || playlist[field] < cur[field]) {
+            cur = playlist;
+        }
+    });
+    return cur;
+}
+
+function updateResults() {
+    var nplaylists  = _.keys(allPlaylists).length;
+
+    if (nplaylists < 2) {
+        info("add at least 1 more playlist");
+        return;
+    }
+
+    $("#results").show();
+    $("#badges").empty();
+    var size = _.keys(allPlaylists).length * 30;
+    _.each(allPlaylists, function(playlist, uri) {
+        postProcessPlaylist(playlist);
+    });
+
+    makeCompatibilityTable();
+    var seen = new Set();
+    var shared = [];
+    _.each(allPlaylists, function(playlist, uri) {
+        _.each(playlist.tracks, function(item, which) {
+            var track = item.track;
+            track.score = 0;
+            if (seen.has(track.id)) {
+                return;
+            }
+            // shared track/artist score
+            _.each(allPlaylists, function(oplaylist, ouri) {
+                if (uri != ouri) {
+                    if (oplaylist.trackSet.has(track.id)) {
+                        track.score += 10;
+                        track.owner.add(oplaylist.which);
+                    }
+                    _.each(track.artists, function(artist, i) {
+                        if (oplaylist.artistSet.has(artist.id)) {
+                            track.score += 1;
+                            track.aowner.add(oplaylist.which);
+                        };
+                    });
+                }
+            });
+            if (track.score > 0) {
+                shared.push(track);
+                seen.add(track.id);
+            } else {
+                playlist.workingTracks.push(track);
+            }
+        });
+    });
+
+    shared.sort(function(a,b) {
+        return a.score - b.score;
+    });
+    shared.reverse();
+
+    var out = [];
+    var nphases = 4;
+    var phase = 0;
+    var minArtistSeparation = 4;
+
+    var added = 0;
+    while (out.length < size) {
+        if (phase == 0) {
+            added += addNextTrack(out, shared, phase, minArtistSeparation);
+            added += addNextTrack(out, shared, phase, minArtistSeparation);
+        } else if (phase == 1) {
+            var uris = _.shuffle(_.keys(allPlaylists));
+            _.each(uris, function(uri) {
+                var playlist = allPlaylists[uri];
+                if (playlist.workingTracks.length > 0) {
+                    playlist.workingTracks.sort(function(a,b) { return a.popularity - b.popularity; });
+                    playlist.workingTracks.reverse();
+                    added += addNextTrack(out, playlist.workingTracks, phase, minArtistSeparation);
+                }
+            });
+        } else if (phase == 2) {
+            added += addNextTrack(out, shared, phase, minArtistSeparation);
+            added += addNextTrack(out, shared, phase, minArtistSeparation);
+        } else if (phase == 3) {
+            var uris = _.shuffle(_.keys(allPlaylists));
+            _.each(uris, function(uri) {
+                var playlist = allPlaylists[uri];
+                if (playlist.workingTracks.length > 0) {
+                    playlist.workingTracks.sort(function(a,b) { return a.which - b.which; });
+                    added += addNextTrack(out, playlist.workingTracks, phase, minArtistSeparation);
+                }
+            });
+        }
+
+        phase += 1;
+        if (phase >= nphases) {
+            phase = 0;
+            if (added == 0) {
+                minArtistSeparation -= 2;
+                console.log("min sep is now", minArtistSeparation);
+                if (minArtistSeparation < 0) {
+                    break;
+                }
+            } else {
+                added = 0;
+            }
+        }
+    }
+    addBadges();
+    //showResults(out);
+    showSimpleResults(out);
+}
+
+
+function addNextTrack(out, candidates, phase, minArtistSeparation) {
+    var seenTracks = new Set();
+    _.each(out, function(track) {
+        seenTracks.add(track.id);
+    });
+
+    
+    var recentArtists = new Set();
+    var recentTracks = out.slice(Math.max(out.length - minArtistSeparation, 0));
+    _.each(recentTracks, function(track) {
+        _.each(track.artists, function(artist) {
+            recentArtists.add(artist.id);
+        });
+    });
+
+
+    for (var i = 0; i < candidates.length; i++) {
+        var candidate = candidates[i];
+        if (seenTracks.has(candidate.id)) {
+            continue;
+        }
+        var recentArtist = false;
+        _.each(candidate.artists, function(artist) {
+            if (recentArtists.has(artist.id)) {
+                recentArtist = true;
+            }
+        });
+
+        if (recentArtist) {
+            continue
+        }
+
+        candidate.phase = phase;
+        out.push(candidate);
+        candidates.splice(i, 1);
+        return 1;
+    }
+    return 0
+}
+
+
+function showResults(tracks) {
+    var tbody = $("#tracks");
+    tbody.empty();
+    curUris = [];
+    _.each(tracks, function(track, i) {
+        var tr = $("<tr>");
+        tr.append($("<td>").text( (i + 1) ));
+        tr.append($("<td>").text( (track.phase) ));
+        tr.append($("<td>").text( track.score));
+        tr.append($("<td>").text( track.popularity));
+        tr.append($("<td>").text( track.label));
+        tr.append($("<td>").text( Array.from(track.owner).join(', ')));
+        tr.append($("<td>").text( Array.from(track.aowner).join(', ')));
+        tr.append($("<td>").text( track.name));
+        tr.append($("<td>").text( track.artists[0].name));
+        tbody.append(tr);
+        curUris.push("spotify:track:" + track.id);
+    });
+}
+
+function showSimpleResults(tracks) {
+    var tbody = $("#simple-tracks");
+    tbody.empty();
+    curUris = [];
+    _.each(tracks, function(track, i) {
+        var tr = $("<tr>");
+        var reason;
+        if (track.phase == 0 || track.phase == 2) {
+            if (Array.from(track.owner).length > 0) {
+                reason = 'liked by ' + Array.from(track.owner).join(', ');
+            } else {
+                reason = 'artist liked by ' + Array.from(track.aowner).join(', ');
+            }
+        } else if (track.phase == 1) {
+            reason = 'a popular favorite of ' + Array.from(track.owner).join(', ');
+        } else if (track.phase == 3) {
+            reason = 'the #' + (1 + track.which) + ' favorite of ' + Array.from(track.owner).join(', ');
+        }
+        tr.append($("<td>").text( (i + 1) ));
+        tr.append($("<td>").text( track.popularity));
+        tr.append($("<td>").text( track.name));
+        tr.append($("<td>").text( track.artists[0].name));
+        tr.append($("<td>").text( Array.from(track.owner).join(', ')));
+        tr.append($("<td>").text( Array.from(track.aowner).join(', ')));
+        tr.append($("<td>").text( reason));
+        tbody.append(tr);
+        curUris.push("spotify:track:" + track.id);
+    });
+}
+
+function addSamples() {
+    loadPlaylist('Alice', "https://open.spotify.com/user/spotify/playlist/37i9dQZF1Cz2uvs3d55PIt"); 
+    loadPlaylist('Bob', "https://open.spotify.com/user/spotify/playlist/37i9dQZF1Cz1PWNxkNgi8D"); 
+    loadPlaylist('Carol', "https://open.spotify.com/user/spotify/playlist/37i9dQZF1CyWG6woFkwC0E"); 
+    loadPlaylist('Dave', "https://open.spotify.com/user/spotify/playlist/37i9dQZF1CyZWXOpD8jMSo"); 
+}
+
+function addPlaylist() {
+    info("");
+    var name = $("#name").val();
+    var uri = $("#uri-input").val();
+    uri = normalizeUri(uri);
+
+    if (isValidPlaylistUri(uri)) {
+        loadPlaylist(name, uri);
+    } else {
+        error("That's not a playlist uri");
+    }
+}
+
+function saveTracksToPlaylist(playlist, track_uris) {
+    var track_uris = track_uris.slice();
+    function saveTracks() {
+        var uris = [];
+
+        while (track_uris.length > 0 && uris.length < 100) {
+            var track = track_uris.shift();
+            uris.push(track);
+        }
+
+        var url = "https://api.spotify.com/v1/users/" + curUserID
+            + "/playlists/" + playlist.id + "/tracks";
+        var params = {
+            uris:uris
+        }
+        callSpotify("POST", url, params, function(ok, results) {
+            if (ok) {
+                if (track_uris.length > 0) {
+                    saveTracks();
+                } else {
+                    info("playlist saved");
+                }
+            } else {
+                error("Trouble adding tracks to playlist");
+            }
+        });
+    }
+    saveTracks();
+}
+
+function savePlaylist() {
+    var curTracks = curUris;
+    if (curTracks.length > 0) {
+        var name = "Playlist Mash of " + getNames().join(',');
+        info("saving " + name);
+        var url = "https://api.spotify.com/v1/users/" + curUserID + "/playlists"
+        callSpotify("POST", url, {name:name }, function(ok, results) {
+            if (ok) {
+                saveTracksToPlaylist(results, curTracks);
+            } else {
+                error("Trouble creating playlist");
+            }
+        })
+    } else {
+        info("no tracks to save");
+    }
+}
+
+
+$(document).ready(
+    function() {
+        if (isLocalHost()) {
+            SPOTIFY_REDIRECT_URI = LOCAL_SPOTIFY_REDIRECT_URI;
+        }
+        var args = parseArgs();
+        window.location.hash = "";
+
+        $(".work").hide();
+        if ('error' in args) {
+            error("Sorry, I can't read your music collection from Spotify without authorization");
+            $("#go").show();
+            $("#go").on('click', function() {
+                go();
+            });
+        } else if ('access_token' in args) {
+            $(".work").show();
+            $(".intro").hide();
+            accessToken = args['access_token'];
+            $("#stop-loading").on('click', function() {
+                stopLoading();
+            });
+
+            $("#add").on("click", function() {
+                addPlaylist();
+            });
+            $("#samples").on("click", function() {
+                addSamples();
+            });
+            $("#save-button").on("click", function() {
+                savePlaylist();
+            });
+
+        } else {
+            $("#go").show();
+            $("#go").on('click', function() {
+                go();
+            });
+        }
+    }
+);
+
+</script>
+</body>
+</html>
