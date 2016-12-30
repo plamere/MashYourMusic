@@ -9,7 +9,7 @@
     <link href="https://sp-bootstrap.global.ssl.fastly.net/7.4.1/sp-bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="styles.css?v2" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v3" rel="stylesheet" />
 
     <link rel="shortcut icon" href="images/favicon.png">
     <title> Mash Your Music</title>
@@ -54,14 +54,14 @@
           </div>
           <div id="work" class="work"> 
             <div class='ttext'>
-                Enter the names and URIs of the <b>Your Top Songs 2016</b> playlists of your friends. 
+                Enter the names and URIs of the <br><b>Your Top Songs 2016</b> <br> playlists of you and your friends. 
             </div>
             <form class="form-inline">
               <div><br> </div>
               <div class="form-group">
                 <div class="input-group">
                   <input type="text" class="form-control" id="name" placeholder="playlist owner">
-                  <input type="text" class="form-control" id="uri-input" placeholder="playlist uri">
+                  <input type="text" class="form-control" id="uri-input" placeholder="playlist link or uri">
                   <span class="input-group-btn">
                     <button id='add' class="btn btn-primary" type="button">Add</button>
                   </span>
@@ -74,6 +74,13 @@
             <div class='tttext'>
                 Here's a <a class="hoverable" id='samples'> sample</a> of what the output looks like.
             </div>
+            <!--
+            <div class='tttext'>
+                Click <a class="hoverable" id='reset'> reset</a> to start over
+            </div>
+            -->
+          <div id='status'>
+          </div>
           </div>
       </div>
     </div>
@@ -637,6 +644,13 @@ function findMin(field) {
 }
 
 function updateResults() {
+    $("#status").empty();
+
+    _.each(allPlaylists, function(playlist, url) {
+        var name = $("<span>").addClass("status")
+            .text(playlist.which + "(" + playlist.tracks.length + " tracks)");
+        $("#status").append(name);
+    });
     var nplaylists  = _.keys(allPlaylists).length;
 
     if (nplaylists < 2) {
@@ -650,6 +664,7 @@ function updateResults() {
     _.each(allPlaylists, function(playlist, uri) {
         postProcessPlaylist(playlist);
     });
+
 
     makeCompatibilityTable();
     var seen = new Set();
@@ -813,7 +828,7 @@ function showSimpleResults(tracks) {
         var tr = $("<tr>");
         var reason;
         if (track.phase == 0 || track.phase == 2) {
-            if (Array.from(track.owner).length > 0) {
+            if (Array.from(track.owner).length > 1) {
                 reason = 'liked by ' + Array.from(track.owner).join(', ');
             } else {
                 reason = 'artist liked by ' + Array.from(track.aowner).join(', ');
@@ -932,6 +947,9 @@ $(document).ready(
             });
             $("#samples").on("click", function() {
                 addSamples();
+            });
+            $("#reset").on("click", function() {
+                location.reload();
             });
             $("#save-button").on("click", function() {
                 savePlaylist();
