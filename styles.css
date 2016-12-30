@@ -35,6 +35,13 @@ body {
     /*background: rgba(50,50,50, 0.3);*/
 }
 
+.stext {
+    margin-top:20px;
+    padding-bottom:30px;
+    color:white !important;
+    font-size:14px;
+}
+
 #navbar {
     height:70px !important;
     min-height:70px !important;
@@ -187,7 +194,7 @@ view) */
 }
 
 .status {
-    padding-right:20px;
+    padding-right:10px;
     color:white;
     font-size:24px;
 }

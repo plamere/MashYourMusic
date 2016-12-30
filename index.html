@@ -9,7 +9,7 @@
     <link href="https://sp-bootstrap.global.ssl.fastly.net/7.4.1/sp-bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="styles.css?v3" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v1" rel="stylesheet" />
 
     <link rel="shortcut icon" href="images/favicon.png">
     <title> Mash Your Music</title>
@@ -71,16 +71,15 @@
             <div class='ttext'>
                 The more you add, the better.
             </div>
-            <div class='tttext'>
-                Here's a <a class="hoverable" id='samples'> sample</a> of what the output looks like.
+          <div id='status'> </div>
+            <div class='stext'>
+                Not convinced? <a class="hoverable" id='samples'> Click here</a> to see a sample of what the output looks like.
             </div>
             <!--
             <div class='tttext'>
                 Click <a class="hoverable" id='reset'> reset</a> to start over
             </div>
             -->
-          <div id='status'>
-          </div>
           </div>
       </div>
     </div>
@@ -151,30 +150,20 @@
     </div>
  
     <script src="lib/jquery-1.11.1.min.js"></script>
-    <script src="lib/moment.min.js"></script>
     <script src="https://sp-bootstrap.global.ssl.fastly.net/7.4.1/sp-bootstrap.min.js"></script>
     <script src="lib/underscore-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" charset="utf-8" src="lib/rsvp-latest.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="config.js?v1"></script>
 
 <script>
 "use strict";
 var accessToken = null;
-var curUserID = 'plamere';
+var curUserID = null;
 
 var progressBar = $("#progress-bar");
 var allPlaylists = {};
 var curUris = [];
 
 var artistInfo = {};
-
-
-RSVP.on('error', function(reason) {
-  console.assert(false, reason);
-});
 
 
 function now() {
@@ -238,65 +227,9 @@ function callSpotify(type, url, json, callback) {
     });
 }
 
-
-function getSpotifyP(url, data) {
-    return new RSVP.Promise(function(resolve, reject) {
-        var curRetry = 0;
-        var maxRetries = 10;
-        function go() {
-          $.ajax(url, {
-              dataType: 'json',
-              data: data,
-              headers: {
-                  'Authorization': 'Bearer ' + accessToken
-              },
-              beforeSend : function () {
-                  // console.log("GET: " + this.url);
-              },
-              success: function(data) {
-                  resolve(data);
-              },
-              error: function(jqXHR, textStatus) {
-                  if (jqXHR.status >= 200 && jqXHR.status < 300) {
-                      resolve(jqXHR);
-                  } else if (jqXHR.status == 401) {
-                      window.location = 'index.html';
-                  } else if (jqXHR.status >= 500 && jqXHR.status < 600) {
-                    if (curRetry++ < maxRetries) {
-                        console.log('500 retry', curRetry, jqXHR.status);
-                        setTimeout(go, 500);
-                    } else {
-                        console.log('500 error', jqXHR);
-                        reject(textStatus + " after " + maxRetries + " retries");
-                    }
-                  } else if (jqXHR.status == 429) {
-                      console.log("429 status", jqXHR);
-                      var retry = 2000;
-                      var retryAfter = jqXHR.getResponseHeader("Retry-After");
-                      console.log("retryAfter is", retryAfter);
-
-                      if (retryAfter) {
-                          retry = parseInt(retryAfter, 10) * 1000;
-                      }
-                      if (retry < 1000) {
-                          retry = 1000;
-                      }
-                      console.log("retry", retry);
-                      if (curRetry++ < maxRetries) {
-                          console.log('429 retry', curRetry);
-                          setTimeout(go, retry + curRetry * retry);
-                      } else {
-                          console.log('429 error', jqXHR);
-                          reject(textStatus + " after " + maxRetries + " retries");
-                      }
-                    } else {
-                      reject(textStatus);
-                  }
-              }
-          });
-      }
-      go();
-    });
+function fetchCurrentUserProfile(callback) {
+    var url = 'https://api.spotify.com/v1/me';
+    callSpotify("GET", url, null, callback);
 }
 
 
@@ -337,7 +270,6 @@ function normalizeUri(uri) {
 }
 
 function stopLoading() {
-    console.log('stop loading');
     abortLoading = true;
     linfo("Stopping ... hang on ...");
 }
@@ -358,11 +290,8 @@ function loadPlaylist(owner, uri) {
     var url = "https://api.spotify.com/v1/users/" + userID + "/playlists/" + playlistID;
 
     function fetchNext(url) {
-        console.log("fetch next", url);
         callSpotify("GET", url, null, function(ok, data) {
-            console.log("fetch next", ok, data);
             allPlaylists[uri].tracks.push.apply(allPlaylists[uri].tracks, data.items);
-            console.log("len", allPlaylists[uri].tracks.length);
             loadTrackArtists(data.items, function() {
                 if (data.next) {
                     fetchNext(data.next);
@@ -392,7 +321,6 @@ function loadPlaylist(owner, uri) {
             });
         } else {
             error("trouble loading that playlist");
-            console.log("error", data);
         }
     });
 }
@@ -400,8 +328,6 @@ function loadPlaylist(owner, uri) {
 
 function fetchArtists(artistIDs, callback) {
     var maxArtistsPerCall = 20;
-
-    console.log("fetchArtists", artistIDs);
 
     function getNextIDs() {
         var artists = [];
@@ -416,18 +342,14 @@ function fetchArtists(artistIDs, callback) {
 
     function nextArtists() {
         var nextIDs = getNextIDs();
-        console.log("nextArtists IDS", nextIDs);
         if (nextIDs.length > 0) {
             callSpotify("GET", "https://api.spotify.com/v1/artists?ids=" + nextIDs, null, function(ok, data) {
-                console.log("nextArtists", ok, data);
                 _.each(data.artists, function(artist) {
                     artistInfo[artist.id] = artist;
                 });
                 if (nextIDs.length > 0) {
-                    console.log('next');
                     nextArtists();
                 } else {
-                    console.log('callback');
                     callback(artistInfo);
                 }
             });
@@ -440,7 +362,6 @@ function fetchArtists(artistIDs, callback) {
 
 function loadTrackArtists(trackItems, callback) {
     var artistIDs = [];
-    console.log("loadTrackArtists");
     _.each(trackItems, function(item) {
         var track = item.track;
         _.each(track.artists, function(artist) {
@@ -489,9 +410,6 @@ function makeCompatibilityTable() {
             });
         });
     });
-    console.log('commonArtists', commonArtists);
-    console.log('commonTracks', commonTracks);
-
     showCommonTable(commonTracks, commonArtists, $("#shared"));
 
     var maxUser = null;
@@ -648,8 +566,9 @@ function updateResults() {
 
     _.each(allPlaylists, function(playlist, url) {
         var name = $("<span>").addClass("status")
-            .text(playlist.which + "(" + playlist.tracks.length + " tracks)");
+            .html(playlist.which + "(" + playlist.tracks.length + "&nbsp;tracks)");
         $("#status").append(name);
+        $("#status").append(" ");
     });
     var nplaylists  = _.keys(allPlaylists).length;
 
@@ -744,7 +663,6 @@ function updateResults() {
             phase = 0;
             if (added == 0) {
                 minArtistSeparation -= 2;
-                console.log("min sep is now", minArtistSeparation);
                 if (minArtistSeparation < 0) {
                     break;
                 }
@@ -902,7 +820,7 @@ function saveTracksToPlaylist(playlist, track_uris) {
 
 function savePlaylist() {
     var curTracks = curUris;
-    if (curTracks.length > 0) {
+    if (curUserID && curTracks.length > 0) {
         var name = "Playlist Mash of " + getNames().join(',');
         info("saving " + name);
         var url = "https://api.spotify.com/v1/users/" + curUserID + "/playlists"
@@ -953,6 +871,14 @@ $(document).ready(
             });
             $("#save-button").on("click", function() {
                 savePlaylist();
+            });
+
+            fetchCurrentUserProfile(function(status, user) {
+                if (user) {
+                    curUserID = user.id;
+                } else {
+                    error("Trouble getting the user profile");
+                }
             });
 
         } else {
