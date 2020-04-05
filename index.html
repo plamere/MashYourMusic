@@ -41,8 +41,8 @@
               <div  class="container" id="jumbo-dialog">
                 <h1 id='ttitle' >Mash Your Music</h1>
                 <p class='ttext'>
-                    Getting together with your friends this holiday season? Use Mash Your Music
-                    to combine all of <b>Your Top Songs 2017</b> playlists together into a
+                    Want to listen to music with your friends?
+                    Use Mash Your Music to combine your favorite playlists together into a
                     single bangin' playlist.
                     <br>
                 </p>
@@ -54,7 +54,7 @@
           </div>
           <div id="work" class="work"> 
             <div class='ttext'>
-                Enter the names and URIs of the <br><b>Your Top Songs 2017</b> <br> playlists of you and your friends. 
+                Enter the names and URIs of the top playlists for you and your friends. 
             </div>
             <form class="form-inline">
               <div><br> </div>
@@ -72,9 +72,7 @@
                 The more you add, the better.
             </div>
           <div id='status'> </div>
-            <div class='stext'>
-                Not convinced? <a class="hoverable" id='samples'> Click here</a> to see a sample of what the output looks like.
-            </div>
+            <div class='stext'> </div>
             <!--
             <div class='tttext'>
                 Click <a class="hoverable" id='reset'> reset</a> to start over
@@ -85,14 +83,17 @@
     </div>
     <div class="intro row"> 
         <div class="more-info col-sm-offset-3 col-sm-6">
-            <img src="https://lineup-images.scdn.co/your-top-songs-2017_DEFAULT-en.jpg">
             <div><br></div>
             Mash Your Music will help you create a great playlist by combining the best music from
-            everyone's Top Songs 2017 playlist. The generated playlist will contain a little bit of everyone's
+            everyone's favorite playlists. The generated playlist will contain a little bit of everyone's
             favorites with an emphasis on music that is shared by the most people.
             <div><br></div>
             Mash Your Music will also show you some fun attributes about your group such as who has 
             the most compatible music taste, and who is the most hipster.
+            <br>
+            <div>
+                Not convinced? <a class="hoverable" href='images/example.png'> Click here</a> to see a sample of what the output looks like.
+            </div>
         </div>
     </div>
     <div class="row" id="results">
@@ -152,7 +153,7 @@
     <script src="lib/jquery-1.11.1.min.js"></script>
     <script src="https://sp-bootstrap.global.ssl.fastly.net/7.4.1/sp-bootstrap.min.js"></script>
     <script src="lib/underscore-min.js"></script>
-    <script src="config.js?v1"></script>
+    <script src="config.js?v2"></script>
 
 <script>
 "use strict";
@@ -239,10 +240,10 @@ function isLocalHost() {
 
 function isValidPlaylistUri(uri) {
     var fields = uri.split(':');
-    if (fields.length != 5) {
+    if (fields.length != 3) {
         return false;
     }
-    if (fields[0] != 'spotify' || fields[3] != 'playlist') {
+    if (fields[0] != 'spotify' || fields[1] != 'playlist') {
         return false;
     }
     return true;
@@ -284,10 +285,8 @@ function loadPlaylist(owner, uri) {
     uri = normalizeUri(uri);
 
     var fields = uri.split(':');
-    var userID = fields[2];
-    var playlistID = fields[4];
-
-    var url = "https://api.spotify.com/v1/users/" + userID + "/playlists/" + playlistID;
+    var playlistID = fields[2];
+    var url = "https://api.spotify.com/v1/playlists/" + playlistID;
 
     function fetchNext(url) {
         callSpotify("GET", url, null, function(ok, data) {
@@ -769,10 +768,10 @@ function showSimpleResults(tracks) {
 }
 
 function addSamples() {
-    loadPlaylist('Alice', "https://open.spotify.com/user/spotify/playlist/37i9dQZF1Cz2uvs3d55PIt"); 
-    loadPlaylist('Bob', "https://open.spotify.com/user/spotify/playlist/37i9dQZF1Cz1PWNxkNgi8D"); 
-    loadPlaylist('Carol', "https://open.spotify.com/user/spotify/playlist/37i9dQZF1CyWG6woFkwC0E"); 
-    loadPlaylist('Dave', "https://open.spotify.com/user/spotify/playlist/37i9dQZF1CyZWXOpD8jMSo"); 
+    loadPlaylist('Alice', "https://open.spotify.com/playlist/37i9dQZF1Cz2uvs3d55PIt"); 
+    loadPlaylist('Bob',   "https://open.spotify.com/playlist/37i9dQZF1Cz1PWNxkNgi8D"); 
+    loadPlaylist('Carol', "https://open.spotify.com/playlist/37i9dQZF1CyWG6woFkwC0E"); 
+    loadPlaylist('Dave',  "https://open.spotify.com/playlist/37i9dQZF1CyZWXOpD8jMSo"); 
 }
 
 function addPlaylist() {
